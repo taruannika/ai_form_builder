@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
+const authRoutes = require("./routes/auth.route");
+
 const app = express();
 
 const PORT = process.env.PORT || 8000;
@@ -31,6 +33,8 @@ connectToDB();
 app.use(cors(CORS_OPTIONS));
 app.use(express.json());
 app.use(cookieParser());
+
+app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running at port ${PORT}`);
