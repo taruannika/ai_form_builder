@@ -1,5 +1,11 @@
+import Hero from "../components/Hero";
+
 const LandingPage = () => {
-  return <div>LandingPage</div>;
+  return (
+    <div className="min-h-screen">
+      <Hero />
+    </div>
+  );
 };
 
 export default LandingPage;
