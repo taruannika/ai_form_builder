@@ -8,17 +8,19 @@ const register = async (req, res, next) => {
     const { email, username, password, confirmpassword } = req.body;
 
     if (password !== confirmpassword) {
-      return res
-        .status(400)
-        .json({ message: "Password and confirmpassword don't match" });
+      return res.status(400).json({
+        path: ["password", "confirmpassword"],
+        message: "Passwords do not match",
+      });
     }
 
     const user = await User.findOne({ email });
 
     if (user) {
-      return res
-        .status(400)
-        .json({ message: "User with this email already exists" });
+      return res.status(400).json({
+        path: ["email"],
+        message: "User with this email already exists",
+      });
     }
 
     const newUser = new User({

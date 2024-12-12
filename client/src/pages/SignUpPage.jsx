@@ -1,35 +1,42 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import axios from "axios";
+import { useState } from "react";
+import { BiShow, BiHide } from "react-icons/bi";
 
 //#region TODOS
-// TODO: add hide and show password
-// TODO: add form validation
-// TODO: Display error messages
+
 // TODO: Handle succesfull signup
 //#endregion
 
 const SignUpPage = () => {
-  const [userCredentials, setUserCredentials] = useState({
-    email: "",
-    username: "",
-    password: "",
-    confirmpassword: "",
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmpassword: false,
   });
 
-  const handleUserCredentialsChange = (e) => {
-    const { name, value } = e.target;
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm();
 
-    setUserCredentials((prevState) => ({ ...prevState, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const onSubmit = async (data) => {
     try {
-      const response = await axios.post("/api/auth/register", userCredentials);
+      const response = await axios.post("/api/auth/register", data);
+      // successfull signup
       console.log(response.data);
     } catch (error) {
-      console.log(error);
+      if (error.response.data.path) {
+        error.response.data.path.forEach((path) => {
+          setError(path, {
+            type: "server",
+            message: error.response.data.message,
+          });
+        });
+      } else {
+        console.log("Error:", error.response.data.message);
+      }
     }
   };
   return (
@@ -45,60 +52,108 @@ const SignUpPage = () => {
         </p>
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(onSubmit)}
           className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
         >
           <p className="text-center text-lg font-medium">Create your account</p>
 
-          <label className="input input-bordered flex items-center gap-2">
-            <input
-              className="grow"
-              type="email"
-              placeholder="Enter email..."
-              autoComplete="new-password"
-              name="email"
-              value={userCredentials.email}
-              onChange={handleUserCredentialsChange}
-            />
-          </label>
+          <div>
+            <label className="input input-bordered flex items-center gap-2">
+              <input
+                className="grow"
+                type="email"
+                placeholder="Enter email..."
+                autoComplete="new-password"
+                name="email"
+                {...register("email", { required: "Email is required" })}
+              />
+            </label>
+            {errors.email && (
+              <p className="text-red-600 px-2 font-light">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
 
-          <label className="input input-bordered flex items-center gap-2">
-            <input
-              className="grow"
-              type="text"
-              placeholder="Enter username..."
-              autoComplete="new-password"
-              name="username"
-              value={userCredentials.username}
-              onChange={handleUserCredentialsChange}
-            />
-          </label>
+          <div>
+            <label className="input input-bordered flex items-center gap-2">
+              <input
+                className="grow"
+                type="text"
+                placeholder="Enter username..."
+                autoComplete="new-password"
+                name="username"
+                {...register("username", { required: "Username is required" })}
+              />
+            </label>
+            {errors.username && (
+              <p className="text-red-600 px-2 font-light">
+                {errors.username.message}
+              </p>
+            )}
+          </div>
 
-          <label className="input input-bordered flex items-center gap-2">
-            <input
-              className="grow"
-              type="password"
-              placeholder="Enter password..."
-              autoComplete="new-password"
-              name="password"
-              value={userCredentials.password}
-              onChange={handleUserCredentialsChange}
-            />
-            <kbd className="kbd kbd-sm">⌘</kbd>
-          </label>
+          <div>
+            <label className="input input-bordered flex items-center gap-2">
+              <input
+                className="grow"
+                type={showPassword.password ? "text" : "password"}
+                placeholder="Enter password..."
+                autoComplete="new-password"
+                name="password"
+                {...register("password", {
+                  required: "Password is required",
+                })}
+              />
+              <p
+                className="cursor-pointer"
+                onClick={() =>
+                  setShowPassword({
+                    ...showPassword,
+                    password: !showPassword.password,
+                  })
+                }
+              >
+                {showPassword.password ? <BiHide /> : <BiShow />}
+              </p>
+            </label>
+            {errors.password && (
+              <p className="text-red-600 px-2 font-light">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
 
-          <label className="input input-bordered flex items-center gap-2">
-            <input
-              className="grow"
-              type="password"
-              placeholder="Confirm password..."
-              autoComplete="new-password"
-              name="confirmpassword"
-              value={userCredentials.confirmpassword}
-              onChange={handleUserCredentialsChange}
-            />
-            <kbd className="kbd kbd-sm">⌘</kbd>
-          </label>
+          <div>
+            <label className="input input-bordered flex items-center gap-2">
+              <input
+                className="grow"
+                type={showPassword.confirmpassword ? "text" : "password"}
+                placeholder="Confirm password..."
+                autoComplete="new-password"
+                name="confirmpassword"
+                {...register("confirmpassword", {
+                  required: "Confirm password is required",
+                })}
+              />
+              <p
+                className="cursor-pointer"
+                onClick={() =>
+                  setShowPassword({
+                    ...showPassword,
+                    confirmpassword: !showPassword.confirmpassword,
+                  })
+                }
+              >
+                {showPassword.confirmpassword ? <BiHide /> : <BiShow />}
+              </p>
+            </label>
+            {errors.confirmpassword && (
+              <p className="text-red-600 px-2 font-light">
+                {errors.confirmpassword.message}
+              </p>
+            )}
+          </div>
 
           <button className="block w-full rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white">
             Sign Up
@@ -110,6 +165,8 @@ const SignUpPage = () => {
               Login
             </a>
           </p>
+
+          <p className="text-red-600 p-3">Server Error here</p>
         </form>
       </div>
     </div>
