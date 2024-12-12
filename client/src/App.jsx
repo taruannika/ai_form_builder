@@ -5,7 +5,7 @@ import SignUpPage from "./pages/SignUpPage";
 
 const App = () => {
   return (
-    <div>
+    <div data-theme={"dark"}>
       <Header />
       <SignUpPage />
     </div>

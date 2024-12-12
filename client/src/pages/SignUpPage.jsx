@@ -14,6 +14,8 @@ const SignUpPage = () => {
     confirmpassword: false,
   });
 
+  const [serverError, setServerError] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -36,11 +38,12 @@ const SignUpPage = () => {
         });
       } else {
         console.log("Error:", error.response.data.message);
+        setServerError(error.response?.data?.message || "An error occured");
       }
     }
   };
   return (
-    <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+    <div className="min-h-screen mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-lg">
         <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
           Get started today
@@ -155,6 +158,8 @@ const SignUpPage = () => {
             )}
           </div>
 
+          {serverError && <p className="text-red-600 p-3">{serverError}</p>}
+
           <button className="block w-full rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white">
             Sign Up
           </button>
@@ -165,8 +170,6 @@ const SignUpPage = () => {
               Login
             </a>
           </p>
-
-          <p className="text-red-600 p-3">Server Error here</p>
         </form>
       </div>
     </div>
