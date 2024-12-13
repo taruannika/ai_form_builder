@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { BiShow, BiHide } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 //#region TODOS
@@ -17,6 +17,8 @@ const SignUpPage = () => {
 
   const [serverError, setServerError] = useState("");
 
+  const navigate = useNavigate();
+
   const { signUp } = useAuth();
 
   const {
@@ -29,9 +31,7 @@ const SignUpPage = () => {
   const onSubmit = async (data) => {
     try {
       await signUp(data);
-      // const response = await axios.post("/api/auth/register", data);
-      // successfull signup
-      // console.log(response.data);
+      navigate("/");
     } catch (error) {
       if (error.response.data.path) {
         error.response.data.path.forEach((path) => {

@@ -15,8 +15,8 @@ export const AuthProvider = ({ children }) => {
         });
         setUser(response.data);
       } catch (error) {
-        setUser(null);
         console.log(error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -33,9 +33,17 @@ export const AuthProvider = ({ children }) => {
     setUser(response.data.user);
   };
 
+  const logout = async () => {
+    const response = await axios.post("/api/auth/logout");
+    console.log(response.data);
+    setUser(null);
+  };
+
   const isAuthenticated = !!user;
   return (
-    <AuthContext.Provider value={{ loading, isAuthenticated, user, signUp }}>
+    <AuthContext.Provider
+      value={{ loading, isAuthenticated, user, signUp, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

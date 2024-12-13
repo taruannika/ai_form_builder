@@ -54,7 +54,12 @@ const login = async (req, res, next) => {
 };
 
 const logout = async (req, res, next) => {
-  res.send("logout User");
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+  res.status(200).json({ message: "Logged out successfully" });
 };
 
 const currentUser = async (req, res, next) => {
