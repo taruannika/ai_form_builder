@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useState } from "react";
 import { BiShow, BiHide } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 //#region TODOS
 
@@ -16,6 +17,8 @@ const SignUpPage = () => {
 
   const [serverError, setServerError] = useState("");
 
+  const { signUp } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -25,9 +28,10 @@ const SignUpPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("/api/auth/register", data);
+      await signUp(data);
+      // const response = await axios.post("/api/auth/register", data);
       // successfull signup
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       if (error.response.data.path) {
         error.response.data.path.forEach((path) => {
@@ -43,7 +47,7 @@ const SignUpPage = () => {
     }
   };
   return (
-    <div className="min-h-screen mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+    <div className=" mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-lg">
         <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
           Get started today
@@ -166,9 +170,9 @@ const SignUpPage = () => {
 
           <p className="text-center text-sm text-gray-500">
             Have an account?
-            <a className="underline ml-3" href="#">
+            <Link to={"/login"} className="underline ml-3">
               Login
-            </a>
+            </Link>
           </p>
         </form>
       </div>

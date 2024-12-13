@@ -58,7 +58,13 @@ const logout = async (req, res, next) => {
 };
 
 const currentUser = async (req, res, next) => {
-  res.send("current User");
+  try {
+    const user = req.user;
+
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {

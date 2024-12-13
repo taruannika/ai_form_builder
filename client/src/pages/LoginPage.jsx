@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const LoginPage = () => {
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
@@ -35,9 +37,9 @@ const LoginPage = () => {
 
           <p className="text-center text-sm text-gray-500">
             No account?
-            <a className="underline ml-3" href="#">
-              Sign up
-            </a>
+            <Link to={"/register"} className="underline ml-3">
+              Sign Up
+            </Link>
           </p>
         </form>
       </div>
