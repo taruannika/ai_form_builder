@@ -33,6 +33,15 @@ export const AuthProvider = ({ children }) => {
     setUser(response.data.user);
   };
 
+  const login = async (credentials) => {
+    const response = await axios.post("/api/auth/login", credentials, {
+      withCredentials: true,
+    });
+
+    console.log(response.data);
+    setUser(response.data.user);
+  };
+
   const logout = async () => {
     const response = await axios.post("/api/auth/logout");
     console.log(response.data);
@@ -42,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = !!user;
   return (
     <AuthContext.Provider
-      value={{ loading, isAuthenticated, user, signUp, logout }}
+      value={{ loading, isAuthenticated, user, signUp, login, logout }}
     >
       {children}
     </AuthContext.Provider>

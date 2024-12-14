@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -31,7 +32,7 @@ const register = async (req, res, next) => {
 
     await newUser.save();
 
-    const token = jwt.sign({ id: newUser.id }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: newUser.id }, JWT_SECRET, { expiresIn: "7d" });
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -39,7 +40,7 @@ const register = async (req, res, next) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(201).json({
+    res.status(200).json({
       message: "User created successfully",
       user: newUser,
       token: token,
@@ -50,7 +51,37 @@ const register = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
-  res.send("login User");
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ path: ["email"], message: "User not found" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res
+        .status(400)
+        .json({ path: ["password"], message: "Invalid password" });
+    }
+
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "7d" });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(201).json({
+      message: "User logged in successfully",
+      user: user,
+      token: token,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const logout = async (req, res, next) => {
