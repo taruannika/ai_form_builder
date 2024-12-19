@@ -1,11 +1,12 @@
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -49,9 +50,24 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAuthenticated = !!user;
+
+  const openModal = () => {
+    if (modalRef.current) {
+      modalRef.current.showModal();
+    }
+  };
   return (
     <AuthContext.Provider
-      value={{ loading, isAuthenticated, user, signUp, login, logout }}
+      value={{
+        loading,
+        isAuthenticated,
+        user,
+        signUp,
+        login,
+        logout,
+        modalRef,
+        openModal,
+      }}
     >
       {children}
     </AuthContext.Provider>

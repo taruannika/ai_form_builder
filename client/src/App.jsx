@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import PrivateRoutes from "./components/PrivateRoutes";
 import DashBoardLayout from "./pages/DashBoardLayout";
+import DashBoard from "./pages/DashBoard";
 
 const App = () => {
   return (
@@ -14,7 +15,11 @@ const App = () => {
         <Route element={<PrivateRoutes />}>
           <Route
             path="/dashboard"
-            element={<DashBoardLayout>DashBoard</DashBoardLayout>}
+            element={
+              <DashBoardLayout>
+                <DashBoard />
+              </DashBoardLayout>
+            }
           />
         </Route>
 
