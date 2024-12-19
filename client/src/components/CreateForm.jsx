@@ -1,12 +1,20 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { AiChatSession } from "../config/AiModal";
 
+const PROMT =
+  ", On the basis of description please give form in JSON format with form title, form subheading with form having form field, form name, placeholder name and form label, fieldtype, field required in JSON format ";
 const CreateForm = () => {
   const { modalRef } = useAuth();
   const [userInput, setUserInput] = useState("");
 
-  const onCreateForm = () => {
+  const onCreateForm = async () => {
     console.log(userInput);
+
+    const result = await AiChatSession.sendMessage(
+      `Description: ${userInput} ${PROMT}`
+    );
+    console.log(result.response.text());
     onModalClose();
   };
 
